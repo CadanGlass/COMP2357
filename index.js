@@ -26,10 +26,6 @@ const loginSchema = Joi.object({
   password: Joi.string().max(20).required(),
 });
 
-
-
-
-
 app.use(express.static(publicPath));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -60,8 +56,6 @@ app.use(
     rolling: true,
   })
 );
-
-
 
 const isAuth = (req, res, next) => {
   if (req.session.isAuth) {
@@ -117,13 +111,11 @@ app.post("/login", async (req, res) => {
   res.redirect("/dashboard");
 });
 
-
 app.get("/register", redirectToDashboardIfAuth, (req, res) => {
   res.render("register");
 });
 
 app.post("/register", async (req, res) => {
-
   const validationResult = schema.validate(req.body);
   if (validationResult.error) {
     console.log(validationResult.error);
