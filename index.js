@@ -44,7 +44,7 @@ mongoose
     console.log("MongoDB Connected");
   });
 
-const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 1 * 0 * 0 * 0; //expires after 1 hour  (hours * minutes * seconds * millis)
 
 const mongoStore = new MongoDBSession({
   uri: mongoURI,
