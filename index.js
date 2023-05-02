@@ -17,8 +17,16 @@ const Joi = require("joi");
 
 const schema = Joi.object({
   username: Joi.string().alphanum().max(20).required(),
+  email: Joi.string().email().required(),
   password: Joi.string().max(20).required(),
 });
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().max(20).required(),
+});
+
+
 
 
 
@@ -81,11 +89,11 @@ app.get("/login", redirectToDashboardIfAuth, (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-const validationResult = schema.validate(req.body);
-  if (validationResult.error) {
-    console.log(validationResult.error);
-    return res.redirect("/login");
-  }
+ const validationResult = loginSchema.validate(req.body);
+ if (validationResult.error) {
+   console.log(validationResult.error);
+   return res.redirect("/login");
+ }
   const { email, password } = req.body;
 
   const user = await UserModel.findOne({ email });
