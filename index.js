@@ -89,29 +89,34 @@ app.get("/login", redirectToDashboardIfAuth, (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
- const validationResult = loginSchema.validate(req.body);
- if (validationResult.error) {
-   console.log(validationResult.error);
-   return res.redirect("/login");
- }
+  const validationResult = loginSchema.validate(req.body);
+  if (validationResult.error) {
+    console.log(validationResult.error);
+    return res.redirect("/login");
+  }
   const { email, password } = req.body;
 
   const user = await UserModel.findOne({ email });
 
   if (!user) {
-    return res.redirect("/login");
+    return res
+      .status(400)
+      .render("login", { error: "Invalid email or password" });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    return res.redirect("/login");
+    return res
+      .status(400)
+      .render("login", { error: "Invalid email or password" });
   }
 
   req.session.isAuth = true;
   req.session.userEmail = email; // Store the user's email in the session
   res.redirect("/dashboard");
 });
+
 
 app.get("/register", redirectToDashboardIfAuth, (req, res) => {
   res.render("register");
