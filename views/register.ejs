@@ -1,68 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register Page</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-      }
-      .container {
-        width: 300px;
-        padding: 16px;
-        background-color: white;
-        border-radius: 10px;
-        margin: 100px auto;
-        box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
-      }
-      input[type="text"],
-      input[type="email"],
-      input[type="password"] {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        border-radius: 5px;
-      }
-      button {
-        background-color: #4caf50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        border-radius: 5px;
-      }
-      button:hover {
-        opacity: 0.8;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
+<%- include("templates/header") %>
+<div class="container">
+      <h1 class="text-center my-4">Register</h1>
       <form action="/register" method="post">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" required />
-
-        <label for="email"><b>Email</b></label>
-        <input type="email" placeholder="Enter Email" name="email" required />
-
-        <label for="psw"><b>Password</b></label>
-        <input
-          type="password"
-          placeholder="Enter Password"
-          name="password"
-          required
-        />
-
-        <button type="submit">Register</button>
+        <div class="mb-3">
+          <label for="username" class="form-label"><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="username" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label"><b>Email</b></label>
+          <input type="email" placeholder="Enter Email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-success w-100">Register</button>
       </form>
     </div>
-  </body>
-</html>
+<%- include("templates/footer") %>

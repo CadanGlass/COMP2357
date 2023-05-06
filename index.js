@@ -74,6 +74,11 @@ const redirectToDashboardIfAuth = (req, res, next) => {
   }
 };
 
+app.get("/landing", redirectToDashboardIfAuth, (req, res) => {
+  res.render("landing");
+});
+
+
 app.get("/", redirectToDashboardIfAuth, (req, res) => {
   res.render("landing");
 });

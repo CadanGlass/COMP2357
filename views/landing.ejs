@@ -1,42 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-        .container {
-            width: 200px;
-            padding: 16px;
-            background-color: white;
-            border-radius: 10px;
-            margin: 100px auto;
-            box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 5px;
-        }
-        button:hover {
-            opacity: 0.8;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <button type="submit" onclick="location.href = 'login';">Login</button>
-        <button type="button" onclick="location.href='register';">Sign Up</button>
-    </div>
-</body>
-</html>
+<%- include("templates/header") %>
+
+<div class="container d-flex flex-column align-items-center" style="margin-top: 100px;">
+  <h1 class="mb-4">Welcome</h1>
+  <div class="d-flex justify-content-center">
+    <button
+      type="button"
+      class="btn btn-primary btn-custom-margin"
+      onclick="location.href = 'login';"
+    >
+      Login
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      onclick="location.href='register';"
+    >
+      Sign Up
+    </button>
+  </div>
+</div>
+
+<style>
+  .btn-custom-margin {
+    margin-right: 1rem;
+  }
+
+  .vertical-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .container {
+    width: 400px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 10px;
+    margin: 100px auto;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+</style>
+
+<%- include("templates/footer") %>
