@@ -59,6 +59,8 @@ app.use(
   })
 );
 
+// Middleware
+
 const isAuth = (req, res, next) => {
   if (req.session.isAuth) {
     next();
@@ -75,6 +77,8 @@ const redirectToDashboardIfAuth = (req, res, next) => {
     next();
   }
 };
+
+// Middleware to detect if user is admin redirects to dashboard if not
 
 const isAdmin = async (req, res, next) => {
   if (!req.session.isAuth) {
