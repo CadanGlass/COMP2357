@@ -88,7 +88,8 @@ const isAdmin = async (req, res, next) => {
   try {
     const user = await UserModel.findOne({ email: req.session.userEmail });
     if (!user || !user.admin) {
-      return res.redirect("/dashboard");
+      // Return 403 status and render the 403.ejs page
+      return res.status(403).render("403");
     }
 
     next();
@@ -97,6 +98,8 @@ const isAdmin = async (req, res, next) => {
     res.redirect("/dashboard");
   }
 };
+
+
 
 app.get("/landing", redirectToDashboardIfAuth, (req, res) => {
   res.render("landing");
