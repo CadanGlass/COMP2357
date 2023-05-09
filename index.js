@@ -19,7 +19,9 @@ const schema = Joi.object({
   username: Joi.string().alphanum().max(20).required(),
   email: Joi.string().email().required(),
   password: Joi.string().max(20).required(),
+  admin: Joi.boolean().optional(),
 });
+
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -74,10 +76,27 @@ const redirectToDashboardIfAuth = (req, res, next) => {
   }
 };
 
+const isAdmin = async (req, res, next) => {
+  if (!req.session.isAuth) {
+    return res.redirect("/");
+  }
+
+  try {
+    const user = await UserModel.findOne({ email: req.session.userEmail });
+    if (!user || !user.admin) {
+      return res.redirect("/dashboard");
+    }
+
+    next();
+  } catch (error) {
+    console.error("Error checking user admin status:", error);
+    res.redirect("/dashboard");
+  }
+};
+
 app.get("/landing", redirectToDashboardIfAuth, (req, res) => {
   res.render("landing");
 });
-
 
 app.get("/", redirectToDashboardIfAuth, (req, res) => {
   res.render("landing");
@@ -121,17 +140,19 @@ app.get("/register", redirectToDashboardIfAuth, (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const validationResult = schema.validate(req.body);
+  const { username, email, password } = req.body;
+  const admin = req.body.admin === "on" ? true : false;
+
+  const validationResult = schema.validate({
+    username,
+    email,
+    password,
+    admin,
+  });
   if (validationResult.error) {
     console.log(validationResult.error);
-
     return res.redirect("/register");
   }
-  const { username, email, password } = req.body;
-
-  console.log("Username:", username);
-  console.log("Email:", email);
-  console.log("Password:", password);
 
   let user = await UserModel.findOne({ email });
 
@@ -146,6 +167,7 @@ app.post("/register", async (req, res) => {
       username,
       email,
       password: hashedPsw,
+      admin: admin,
     });
 
     await user.save();
@@ -154,6 +176,19 @@ app.post("/register", async (req, res) => {
     console.error("Error hashing password:", error);
     res.redirect("/register");
   }
+});
+
+
+
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.redirect("/dashboard");
+    }
+    res.clearCookie("connect.sid");
+    res.redirect("/");
+  });
 });
 
 app.get("/dashboard", isAuth, async (req, res) => {
@@ -173,16 +208,42 @@ app.get("/dashboard", isAuth, async (req, res) => {
   }
 });
 
-app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-      return res.redirect("/dashboard");
-    }
-    res.clearCookie("connect.sid");
-    res.redirect("/");
-  });
+app.get("/admin", isAdmin, async (req, res) => {
+  try {
+    const users = await UserModel.find({});
+    res.render("admin", { users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res
+      .status(500)
+      .render("error", { error: "An error occurred while fetching users" });
+  }
 });
+
+app.get("/promote/:id", isAdmin, async (req, res) => {
+  try {
+    await UserModel.updateOne({ _id: req.params.id }, { admin: true });
+    res.redirect("/admin");
+  } catch (error) {
+    console.error("Error promoting user:", error);
+    res
+      .status(500)
+      .render("error", { error: "An error occurred while promoting user" });
+  }
+});
+
+app.get("/demote/:id", isAdmin, async (req, res) => {
+  try {
+    await UserModel.updateOne({ _id: req.params.id }, { admin: false });
+    res.redirect("/admin");
+  } catch (error) {
+    console.error("Error demoting user:", error);
+    res
+      .status(500)
+      .render("error", { error: "An error occurred while demoting user" });
+  }
+});
+
 
 app.listen(port, () => {
   console.log("Node application listening on port" + port);
